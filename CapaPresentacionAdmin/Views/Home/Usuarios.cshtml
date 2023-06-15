@@ -105,6 +105,8 @@
 
         var tdata;
         var filaSeleccionada;
+        
+
         //data es el nombre del atributo puesto en HomeCOntroller que devuelve listarUsuarios()
         tdata = $("#tabla").DataTable({
             responsive: true,
@@ -137,9 +139,9 @@
             }
         })
 
-        function abrirModal(data) {
 
-            
+
+        function abrirModal(data) {
 
             $("#mensajeError").hide();
 
@@ -171,8 +173,8 @@
 
         $("#tabla tbody").on("click", ".btn-eliminar", function () {
 
-            var usuarioSelecionado = $(this).closest("tr");
-            var filaData = tdata.row(usuarioSelecionado).data();
+            var usuarioSeleccionado = $(this).closest("tr");
+            var filaData = tdata.row(usuarioSeleccionado).data();
 
             swal({
                 title:"Esta Seguro?",
@@ -196,18 +198,17 @@
                         contentType:"application/json; charset=utf-8",
                         success: function (data) {
                             if (data.resultado) {
-                                tdata.row(usuarioSelecionado).remove().draw();
+                                tdata.row(usuarioSeleccionado).remove().draw();
 
                             } else {
                                 swal("No se Pudo eliminar", data.mensaje, "error")
                             }
-                        }, 
+                        },
                         error: function (error) { console.log(error)},
                         beforeSend: function () { },
                     })
             })
 
-            console.log(filaData);
         })
 
         function Guardar() {
@@ -220,7 +221,7 @@
             }
 
 
-            //El nombre del atributo de data ha de ser el mismo nombre que del parametro del metodo en HomeController 
+            //El nombre del atributo de data ha de ser el mismo nombre que del parametro del metodo en HomeController
             jQuery.ajax({
                 url:'@Url.Action("GuardarUsuario","Home")',
                 type: "POST",
@@ -231,7 +232,7 @@
                 contentType:"application/json; charset=utf-8",
                 success: function (data) {
 
-                    $("#modal-body").LoadingOverlay("hide"); 
+                    $(".modal-body").LoadingOverlay("hide");
 
                     //Usuario Nuevo
                     if (Usuario.IdUsuario == 0) {
@@ -246,11 +247,10 @@
                             $("#mensajeError").text(data.mensaje);
                             $("#mensajeError").show();
                         }
-                    }
 
 
                     //Usuario Existente
-                    else {
+                    } else {
                         if (data.resultado) {
 
                             tdata.row(filaSeleccionada).data(Usuario).draw(false);
@@ -267,12 +267,13 @@
                 },
                 error: function (error) {
 
-                    $("#modal-body").LoadingOverlay("hide"); 
+                    $(".modal-body").LoadingOverlay("hide");
                     $("#mensajeError").text("Error Ajax");
                     $("#mensajeError").show();
                 },
                 beforeSend: function () {
-                    $("modal-body").LoadingOverlay("show", {
+
+                    $(".modal-body").LoadingOverlay("show", {
                         imageResizeFactor: 2,
                         text: "Cargando...",
                         size: 14
@@ -283,10 +284,6 @@
             })
 
 
-
-
-            /*
-            $("#FormModal").modal("hide");*/
         }
 
     </script>

@@ -17,18 +17,19 @@ namespace CapaDatos
         public List<Usuario> Listar()
         {
             List<Usuario> list = new List<Usuario>();
-            try {
+            try
+            {
 
-                using (SqlConnection oconexion=new SqlConnection(Conexion.cn))
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
                 {
                     string query = "select IdUsuario, Nombres, Apellidos, Correo, Clave, Reestablecer, Activo from USUARIO";
-                    
+
                     SqlCommand cmd = new SqlCommand(query, oconexion);
                     cmd.CommandType = CommandType.Text;
 
                     oconexion.Open();
 
-                    using (SqlDataReader dr= cmd.ExecuteReader())
+                    using (SqlDataReader dr = cmd.ExecuteReader())
                     {
 
                         while (dr.Read())
@@ -36,7 +37,7 @@ namespace CapaDatos
                             list.Add(new Usuario()
                             {
                                 IdUsuario = Convert.ToInt32(dr["IdUsuario"]),
-                                Nombres =dr["Nombres"].ToString(),
+                                Nombres = dr["Nombres"].ToString(),
                                 Apellidos = dr["Apellidos"].ToString(),
                                 Correo = dr["Correo"].ToString(),
                                 Clave = dr["Clave"].ToString(),
@@ -47,14 +48,16 @@ namespace CapaDatos
                     }
                 }
 
-            }catch(Exception ex){
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex);
-                list = new List<Usuario>(); 
+                list = new List<Usuario>();
             }
             return list;
         }
 
-        public int Registrar (Usuario obj, out string Mensaje)
+        public int Registrar(Usuario obj, out string Mensaje)
         {
             int idautogenerado = 0;
             Mensaje = string.Empty;
@@ -63,24 +66,24 @@ namespace CapaDatos
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
                 {
                     SqlCommand cmd = new SqlCommand("sp_RegistrarUsuario", oconexion);
-                    cmd.Parameters.AddWithValue("Nombres",obj.Nombres);
+                    cmd.Parameters.AddWithValue("Nombres", obj.Nombres);
                     cmd.Parameters.AddWithValue("Apellidos", obj.Apellidos);
                     cmd.Parameters.AddWithValue("Correo", obj.Correo);
                     cmd.Parameters.AddWithValue("Clave", obj.Clave);
                     cmd.Parameters.AddWithValue("Activo", obj.Activo);
-                    cmd.Parameters.Add("Resultado", SqlDbType.Int).Direction=ParameterDirection.Output;
-                    cmd.Parameters.Add("Mensaje", SqlDbType.VarChar,500).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add("Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     oconexion.Open();
 
-                    cmd.ExecuteNonQuery(); 
+                    cmd.ExecuteNonQuery();
 
                     idautogenerado = Convert.ToInt32(cmd.Parameters["Resultado"].Value);
                     Mensaje = cmd.Parameters["Mensaje"].Value.ToString();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 idautogenerado = 0;
                 Mensaje = ex.Message;
@@ -123,23 +126,23 @@ namespace CapaDatos
             return resultado;
         }
 
-        public bool Eliminar(int id , out string Mensaje)
+        public bool Eliminar(int id, out string Mensaje)
         {
             bool resultado = false;
-            Mensaje= string.Empty;
+            Mensaje = string.Empty;
             try
             {
-                using (SqlConnection oconexion= new SqlConnection(Conexion.cn))
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
                 {
-                    SqlCommand cmd = new SqlCommand("DELETE top(1) from usuario where IdUsuario=@id",oconexion);
-                    cmd.Parameters.AddWithValue("@id",id);
+                    SqlCommand cmd = new SqlCommand("DELETE top(1) from usuario where IdUsuario=@id", oconexion);
+                    cmd.Parameters.AddWithValue("@id", id);
                     cmd.CommandType = CommandType.Text;
                     oconexion.Open();
-                    resultado = cmd.ExecuteNonQuery()>0?true:false;
+                    resultado = cmd.ExecuteNonQuery() > 0 ? true : false;
                 }
             }
-            catch(Exception ex) 
-            { 
+            catch (Exception ex)
+            {
                 resultado = false;
                 Mensaje = ex.Message;
             }

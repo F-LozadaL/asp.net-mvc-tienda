@@ -22,22 +22,21 @@ namespace CapaPresentacionAdmin.Controllers
         }
 
         [HttpGet]
-        public JsonResult ListarUsuarios()
-        {
+        public JsonResult ListarUsuarios(){
             List<Usuario> oLista = new List<Usuario>();
             oLista = new CN_Usuarios().Listar();
-
 
             //que significa el segundo parametro de abajo?
             return Json(new { data = oLista },JsonRequestBehavior.AllowGet);
         }
 
+
         [HttpPost]
-        public JsonResult GuardarUsuario(Usuario obj)
-        {
+        public JsonResult GuardarUsuario(Usuario obj){
 
             object resultado;
             string mensaje = string.Empty;
+
             if (obj.IdUsuario == 0)
             {
                 resultado = new CN_Usuarios().Registrar(obj, out mensaje);
@@ -48,6 +47,8 @@ namespace CapaPresentacionAdmin.Controllers
             }
             return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
+
+
         [HttpPost]  
         public JsonResult EliminarUsuario(int id)
         {

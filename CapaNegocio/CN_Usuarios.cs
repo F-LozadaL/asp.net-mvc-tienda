@@ -15,7 +15,6 @@ namespace CapaNegocio
 
         public List<Usuario> Listar()
         {
-             
             return objCapaDato.Listar();
         }
 
@@ -25,30 +24,45 @@ namespace CapaNegocio
             Mensaje = string.Empty;
 
             if (string.IsNullOrEmpty(obj.Nombres) || string.IsNullOrWhiteSpace(obj.Nombres)) Mensaje = "El Nombre del usuario no puede ser vacio";
-            if (string.IsNullOrEmpty(obj.Apellidos) || string.IsNullOrWhiteSpace(obj.Apellidos)) Mensaje = "El Apellido del usuario no puede ser vacio";
-            if (string.IsNullOrEmpty(obj.Correo) || string.IsNullOrWhiteSpace(obj.Correo)) Mensaje = "El Correo del usuario no puede ser vacio";
+            else if (string.IsNullOrEmpty(obj.Apellidos) || string.IsNullOrWhiteSpace(obj.Apellidos)) Mensaje = "El Apellido del usuario no puede ser vacio";
+            else if (string.IsNullOrEmpty(obj.Correo) || string.IsNullOrWhiteSpace(obj.Correo)) Mensaje = "El Correo del usuario no puede ser vacio";
 
             if (string.IsNullOrEmpty(Mensaje))
             {
-                string clave = "test123";
-                obj.Clave = CN_Recursos.ConvertirSha256(clave);
-                return objCapaDato.Registrar(obj, out Mensaje);
-            }
+                string clave = CN_Recursos.GenerarClave();
+                string asunto = "Creacion de Cuenta";
+                string mensaje_cuerpo = "<h3>Su cuenta fue creada</h3></br><p>Su contraseña para acceder es: !clave!</p>";
+                mensaje_cuerpo = mensaje_cuerpo.Replace("!clave!",clave);
+                bool respuesta = CN_Recursos.EnviarCorreo(obj.Correo,asunto, mensaje_cuerpo);
+
+                if (respuesta)
+                {
+
+                    obj.Clave = CN_Recursos.ConvertirSha256(clave);
+                    return objCapaDato.Registrar(obj, out Mensaje);
+                }
                 else
+                {
+                    Mensaje = "No se puede enviar el correo";
+                    return 0;
+                }
+
+            }
+            else
             {
                 return 0;
             }
 
 
-            
+
         }
-        public bool Editar (Usuario obj, out string Mensaje)
+        public bool Editar(Usuario obj, out string Mensaje)
         {
             Mensaje = string.Empty;
 
             if (string.IsNullOrEmpty(obj.Nombres) || string.IsNullOrWhiteSpace(obj.Nombres)) Mensaje = "El Nombre del usuario no puede ser vacio";
-            if (string.IsNullOrEmpty(obj.Apellidos) || string.IsNullOrWhiteSpace(obj.Apellidos)) Mensaje = "El Apellido del usuario no puede ser vacio";
-            if (string.IsNullOrEmpty(obj.Correo) || string.IsNullOrWhiteSpace(obj.Correo)) Mensaje = "El Correo del usuario no puede ser vacio";
+            else if (string.IsNullOrEmpty(obj.Apellidos) || string.IsNullOrWhiteSpace(obj.Apellidos)) Mensaje = "El Apellido del usuario no puede ser vacio";
+            else if (string.IsNullOrEmpty(obj.Correo) || string.IsNullOrWhiteSpace(obj.Correo)) Mensaje = "El Correo del usuario no puede ser vacio";
 
             if (string.IsNullOrEmpty(Mensaje))
             {

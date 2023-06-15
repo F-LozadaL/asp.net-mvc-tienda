@@ -37,7 +37,7 @@ namespace CapaNegocio
         }
 
 
-        public static bool EnviarCorreo(string correo, string asunto, string mensaje)
+        public static bool EnviarCorreo(string correo, string asunto, string mensaje_cuerpo)
         {
             bool resultado = false;
             try
@@ -46,9 +46,9 @@ namespace CapaNegocio
                 mail.To.Add(correo);
                 mail.From = new MailAddress("erjinsei.2210@gmail.com");
                 mail.Subject = asunto;
-                mail.Body= mensaje;
+                mail.Body= mensaje_cuerpo;
                 mail.IsBodyHtml= true;
-
+                
                 var smtp = new SmtpClient()
                 {
                     Credentials= new NetworkCredential("erjinsei.2210@gmail.com", "gqntumyrpmwlxvtf"),
