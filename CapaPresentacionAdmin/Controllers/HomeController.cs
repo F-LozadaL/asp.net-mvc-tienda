@@ -37,7 +37,7 @@ namespace CapaPresentacionAdmin.Controllers
             object resultado;
             string mensaje = string.Empty;
 
-            if (obj.IdUsuario == 0)
+            if (obj.IdUsuario == 0) 
             {
                 resultado = new CN_Usuarios().Registrar(obj, out mensaje);
             }

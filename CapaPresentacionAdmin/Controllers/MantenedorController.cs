@@ -120,7 +120,7 @@ namespace CapaPresentacionAdmin.Controllers
             List<Producto> oLista = new List<Producto>();
             oLista = new CN_Productos().Listar();
 
-            return Json(new { data = oLista }, JsonRequestBehavior.AllowGet);
+            return Json( new { data = oLista }, JsonRequestBehavior.AllowGet);
         }
 
 
