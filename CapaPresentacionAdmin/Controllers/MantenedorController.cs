@@ -125,13 +125,13 @@ namespace CapaPresentacionAdmin.Controllers
 
 
         [HttpPost]
-        public JsonResult GuardarProducto(string obj,HttpPostedFileBase archivoImagen)
+        public JsonResult GuardarProducto(string obj, HttpPostedFileBase archivoImagen)
         {
 
             object resultado;
             string mensaje = string.Empty;
             bool operacion_exitosa = true;
-            bool guardar_imagen_exito=true;
+            bool guardar_imagen_exito = true;
 
             Producto oProducto= new Producto();
             oProducto = JsonConvert.DeserializeObject<Producto>(obj);

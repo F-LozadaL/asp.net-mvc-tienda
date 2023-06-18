@@ -86,9 +86,8 @@ namespace CapaDatos
                     cmd.Parameters.AddWithValue("IdCategoria", obj.oCategoria.IdCategoria);
                     cmd.Parameters.AddWithValue("Precio", obj.Precio);
                     cmd.Parameters.AddWithValue("Stock", obj.Stock);
-                    cmd.Parameters.AddWithValue("RutaImagen", obj.RutaImagen);
-                    cmd.Parameters.AddWithValue("NombreImagen", obj.NombreImagen);
                     cmd.Parameters.AddWithValue("Activo", obj.Activo);
+
                     cmd.Parameters.Add("Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -159,12 +158,12 @@ namespace CapaDatos
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
                 {
 
-                    string query = "update producto set RutaImage=@RutaImagen, NombreImagen=@NombreImagen where IdProucto=@IdProducto";
+                    string query = "update producto set RutaImagen=@rutaimagen, NombreImagen=@nombreimagen where IdProducto=@idproducto";
 
-                    SqlCommand cmd = new SqlCommand("sp_EditarProducto", oconexion);                                        
-                    cmd.Parameters.AddWithValue("@RutaImagen", obj.RutaImagen);
-                    cmd.Parameters.AddWithValue("@NombreImagen", obj.NombreImagen);
-                    cmd.Parameters.AddWithValue("@IdProducto", obj.IdProducto);
+                    SqlCommand cmd = new SqlCommand(query, oconexion);                                        
+                    cmd.Parameters.AddWithValue("@rutaimagen", obj.RutaImagen);
+                    cmd.Parameters.AddWithValue("@nombreimagen", obj.NombreImagen);
+                    cmd.Parameters.AddWithValue("@idproducto", obj.IdProducto);
                     cmd.CommandType = CommandType.Text;
 
                     oconexion.Open();
