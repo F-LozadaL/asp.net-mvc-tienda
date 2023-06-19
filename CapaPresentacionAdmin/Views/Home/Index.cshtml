@@ -123,7 +123,12 @@
 
 @section scripts{
 
+    
+
     <script>
+
+        $("#txtfechainicio").datepicker({dateformat:'dd/mm/yy'}).datepicker('setDate', new Date());
+        $("#txtfechafin").datepicker({ dateformat: 'dd/mm/yy' }).datepicker('setDate', new Date());
 
         jQuery.ajax({
             url: '@Url.Action("VistaDashboard", "Home")',
