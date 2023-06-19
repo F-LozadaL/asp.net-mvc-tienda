@@ -222,15 +222,23 @@ namespace CapaPresentacionAdmin.Controllers
             bool conversion;
             Producto oProducto = new CN_Productos().Listar().Where(p=>p.IdProducto==id).FirstOrDefault();
 
+            if (oProducto.NombreImagen==""|| oProducto.RutaImagen == "")
+            {
+                oProducto.NombreImagen = "null.jpg";
+                oProducto.RutaImagen = "C:\\VSC-DOC\\Fotos-TiendaMVC";
+            }
+            
             string textoBase64 = CN_Recursos.ConvertirBase64(Path.Combine(oProducto.RutaImagen, oProducto.NombreImagen), out conversion);
 
-            return Json(new
+            JsonResult d= Json(new
             {
                 conversion = conversion,
                 textobase64 = textoBase64,
                 extension = Path.GetExtension(oProducto.NombreImagen)
             },
-            JsonRequestBehavior.AllowGet); 
+            JsonRequestBehavior.AllowGet);
+
+            return d;
         }
 
 

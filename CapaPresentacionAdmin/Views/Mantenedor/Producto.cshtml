@@ -298,6 +298,34 @@
 
 
                 //pendiente agregar imagen 
+                jQuery.ajax({
+                    url: '@Url.Action("ImagenProducto","Mantenedor")',
+                    type: "POST",
+                    data: JSON.stringify({
+                        id: json.IdProducto
+                    }),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                        $("#img_producto").LoadingOverlay("hide");
+                        if (data.conversion) {
+
+                            $("#img_producto").attr({ "src": "data:image/" + data.extension + ";base64," + data.textobase64 });
+                        }
+                    },
+                    error: function (error) {
+
+                        $("#mensajeError").show();
+                        $("#mensajeError").text("Error al mostrar Imagen") ;
+                    },
+                    beforeSend: function () {
+                        $("#img_producto").LoadingOverlay("show");
+                    }
+
+
+
+                })
 
             } else {
                 $("#txtid").val(0);
@@ -323,8 +351,8 @@
 
         $("#tabla tbody").on("click", ".btn-eliminar", function () {
 
-            var marcaSeleccionada = $(this).closest("tr");
-            var filaData = tdata.row(marcaSeleccionada).data();
+            var productoSeleccionado = $(this).closest("tr");
+            var filaData = tdata.row(productoSeleccionado).data();
 
             swal({
                 title:"Esta Seguro?",
@@ -332,7 +360,7 @@
                 type:"warning",
                 showCancelButton:true,
                 confirmButtonClass:"btn-primary",
-                confirmButtonText:"Si",
+                confirmButtonText:"Si", 
                 cancelButtonText:"No",
                 closeOnConfirm:true
 
@@ -348,7 +376,7 @@
                         contentType:"application/json; charset=utf-8",
                         success: function (data) {
                             if (data.resultado) {
-                                tdata.row(marcaSeleccionada).remove().draw();
+                                tdata.row(productoSeleccionado).remove().draw();
 
                             } else {
                                 swal("No se Pudo eliminar", data.mensaje, "error")
@@ -363,9 +391,12 @@
 
         function Guardar() {
 
+            if (! $("#contenedor").valid()) {
+                return;
+            }
+
+
             var ImagenSeleccionada = $("#fileProducto")[0].files[0];
-
-
 
 
             var Producto = {

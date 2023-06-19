@@ -125,9 +125,8 @@ namespace CapaDatos
                     cmd.Parameters.AddWithValue("IdCategoria", obj.oCategoria.IdCategoria);
                     cmd.Parameters.AddWithValue("Precio", obj.Precio);
                     cmd.Parameters.AddWithValue("Stock", obj.Stock);
-                    cmd.Parameters.AddWithValue("RutaImagen", obj.RutaImagen);
-                    cmd.Parameters.AddWithValue("NombreImagen", obj.NombreImagen);
                     cmd.Parameters.AddWithValue("Activo", obj.Activo);
+
                     cmd.Parameters.Add("Resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
                     cmd.CommandType = CommandType.StoredProcedure;
