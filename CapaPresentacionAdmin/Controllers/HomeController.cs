@@ -20,6 +20,8 @@ namespace CapaPresentacionAdmin.Controllers
         {
             return View();
         }
+        // USUARIO REQUESTS
+        #region Usuarios
 
         [HttpGet]
         public JsonResult ListarUsuarios(){
@@ -58,6 +60,17 @@ namespace CapaPresentacionAdmin.Controllers
             respuesta = new CN_Usuarios().Eliminar(id, out mensaje);
 
             return Json(new { resultado = respuesta, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
+
+
+
+        [HttpGet]
+        public JsonResult VistaDashboard()
+        {
+            Dashboard objeto = new CN_Reporte().VerDashboard();
+
+            return Json(new { resultado = objeto }, JsonRequestBehavior.AllowGet);
         }
     }
 }
