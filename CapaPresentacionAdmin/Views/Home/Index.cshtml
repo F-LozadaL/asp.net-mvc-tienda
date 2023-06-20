@@ -11,7 +11,7 @@
         <div class="card bg-success text-white mb-4">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-sm-9"
+                    <div class="col-sm-9">
                         <h6>Total Clientes</h6>
                         <h6 id="totalclientes">0</h6>
                     </div>
@@ -27,9 +27,9 @@
         <div class="card bg-warning text-white mb-4">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-sm-9 text-dark"
-                        <h6  >Total de Ventas</h6>
-                        <h6  id = "totalventas" > 0 </h6>
+                    <div class="col-sm-9 text-dark">
+                        <h6>Total de Ventas</h6>
+                        <h6 id="totalventas"> 0 </h6>
                     </div>
                     <div class="col-sm-3">
                         <i class="fa fa-shopping-bag fa-2x text-dark"></i>
@@ -43,7 +43,7 @@
         <div class="card bg-secondary text-white mb-4">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-sm-9"
+                    <div class="col-sm-9">
                         <h6>Cantidad de Productos</h6>
                         <h6 id="totalproductos">0</h6>
                     </div>
@@ -63,7 +63,7 @@
         Historial de Ventas
     </div>
     <div class="card-body">
-        <form>
+        <form action="@Url.Action("ExportarVenta","Home")" method="post">
             <div class="row align-items-end">
                 <div class="col-sm-2">
                     <div class="mb-2">
@@ -123,9 +123,11 @@
 
 @section scripts{
 
-    
+
 
     <script>
+
+
 
         $("#txtfechainicio").datepicker({dateformat:'dd/mm/yy'}).datepicker('setDate', new Date());
         $("#txtfechafin").datepicker({ dateformat: 'dd/mm/yy' }).datepicker('setDate', new Date());
@@ -145,7 +147,50 @@
             }
         })
 
+        //string fechainicio, string fechafin, string idtransaccion
+        var UrlVentas = '@Url.Action("ListaReporte", "Home")' +
+            "?fechainicio=" + $("#txtfechainicio").val() +
+            "&fechafin=" + $("#txtfechafin").val() +
+            "&idtransaccion=" + $("#txtidtransaccion").val();
+
+
+        var tdata;
+        var filaSeleccionada;
+
+        tdata = $("#tabla").DataTable({
+            responsive: true,
+            ordering: false,
+            "ajax": {
+                url: UrlVentas,
+                type: "GET",
+                dataType: "json"
+            },
+            "columns": [
+                { "data": "FechaVenta" },
+                { "data": "Cliente" },
+                { "data": "Producto" },
+                { "data": "Precio" },
+                { "data": "Cantidad" },
+                { "data": "Total" },
+                { "data": "IdTransaccion" }
+            ],
+            "language": {
+                "url": "https://cdn.datatables.net/plug-ins/1.13.1/i18n/es-ES.json"
+            }
+        })
+
+
+
+
+        $("#btnbuscar").on("click", function () {
+            var nueva_url = '@Url.Action("ListaReporte", "Home")' +
+                "?fechainicio=" + $("#txtfechainicio").val() +
+                "&fechafin=" + $("#txtfechafin").val() +
+                "&idtransaccion=" + $("#txtidtransaccion").val();
+
+            tdata.ajax.url(nueva_url).load();
+        })
 
     </script>
-    
-    }
+
+}
