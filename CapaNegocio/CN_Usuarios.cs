@@ -32,12 +32,11 @@ namespace CapaNegocio
                 string clave = CN_Recursos.GenerarClave();
                 string asunto = "Creacion de Cuenta";
                 string mensaje_cuerpo = "<h3>Su cuenta fue creada</h3></br><p>Su contraseña para acceder es: !clave!</p>";
-                mensaje_cuerpo = mensaje_cuerpo.Replace("!clave!",clave);
-                bool respuesta = CN_Recursos.EnviarCorreo(obj.Correo,asunto, mensaje_cuerpo);
+                mensaje_cuerpo = mensaje_cuerpo.Replace("!clave!", clave);
+                bool respuesta = CN_Recursos.EnviarCorreo(obj.Correo, asunto, mensaje_cuerpo);
 
                 if (respuesta)
                 {
-
                     obj.Clave = CN_Recursos.ConvertirSha256(clave);
                     return objCapaDato.Registrar(obj, out Mensaje);
                 }
@@ -46,16 +45,14 @@ namespace CapaNegocio
                     Mensaje = "No se puede enviar el correo";
                     return 0;
                 }
-
             }
             else
             {
                 return 0;
             }
-
-
-
         }
+
+
         public bool Editar(Usuario obj, out string Mensaje)
         {
             Mensaje = string.Empty;
@@ -77,6 +74,49 @@ namespace CapaNegocio
         public bool Eliminar(int id, out string Mensaje)
         {
             return objCapaDato.Eliminar(id, out Mensaje);
+        }
+
+
+
+        public bool CambiarClave(int idusuario, string nuevaclave, out string Mensaje)
+        {
+            return objCapaDato.CambiarClave(idusuario, nuevaclave, out Mensaje);
+
+        }
+        public bool ReestablecerClave(int idusuario, string correo, out string Mensaje)
+        {
+
+            Mensaje = string.Empty;
+            string clave = CN_Recursos.GenerarClave();
+            bool resutlado = objCapaDato.ReestablecerClave(idusuario, clave, out Mensaje);
+
+
+            if (resutlado)
+            {
+                string asunto = "Contraseña Reestablecida";
+                string mensaje_cuerpo = "<h3>Su cuenta fue reestablecida</h3></br><p>Su contraseña para acceder ahora es: !clave!</p>";
+                mensaje_cuerpo = mensaje_cuerpo.Replace("!clave!", clave);
+
+
+                bool respuesta = CN_Recursos.EnviarCorreo(correo, asunto, mensaje_cuerpo);
+
+                if (respuesta)
+                {
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+            else
+            {
+                Mensaje = "No se pudo reestablecer la contraseña";
+                return false;
+            }
+
         }
 
     }
