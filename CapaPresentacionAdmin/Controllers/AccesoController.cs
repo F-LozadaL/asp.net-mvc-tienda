@@ -6,6 +6,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
+using System.Web.Security;
+
 namespace CapaPresentacionAdmin.Controllers
 {
     public class AccesoController : Controller
@@ -21,7 +23,7 @@ namespace CapaPresentacionAdmin.Controllers
 
         }
         public ActionResult Reestablecer()
-        {
+         {
             return View();
         }
 
@@ -46,6 +48,8 @@ namespace CapaPresentacionAdmin.Controllers
                     TempData["IdUsuario"] = oUsuario.IdUsuario;
                     return RedirectToAction("CambiarClave");
                 }
+
+                FormsAuthentication.SetAuthCookie(oUsuario.Correo,false);
                 ViewBag.Error = null;
                 return RedirectToAction("Index","Home");
             }
@@ -91,5 +95,40 @@ namespace CapaPresentacionAdmin.Controllers
             }
 
         }
+
+        [HttpPost]
+        public ActionResult Reestablecer(string correo)
+        {
+            Usuario ousuario = new Usuario();
+
+            ousuario = new CN_Usuarios().Listar().Where(u=>u.Correo==correo).FirstOrDefault();
+
+            if (ousuario == null)
+            {
+                ViewBag.Error = "No se encontro un usuario relacionado a ese correo";
+                return View();
+            }
+            string mensaje= String.Empty;
+            bool respuesta=new CN_Usuarios().ReestablecerClave(ousuario.IdUsuario,correo,out mensaje);
+            if (respuesta)
+            {
+                ViewBag.Error = null;
+                return RedirectToAction("Index","Acceso");
+            }
+            else
+            {
+                ViewBag.Error = mensaje;
+                return View();
+            }
+        }
+
+        public ActionResult CerrarSesion()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Index", "Acceso");
+
+        }
+
+
     }
 }

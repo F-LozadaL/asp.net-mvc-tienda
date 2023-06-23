@@ -88,10 +88,10 @@ namespace CapaNegocio
 
             Mensaje = string.Empty;
             string clave = CN_Recursos.GenerarClave();
-            bool resutlado = objCapaDato.ReestablecerClave(idusuario, clave, out Mensaje);
+            bool resultado = objCapaDato.ReestablecerClave(idusuario, CN_Recursos.ConvertirSha256(clave), out Mensaje);
 
 
-            if (resutlado)
+            if (resultado)
             {
                 string asunto = "Contraseña Reestablecida";
                 string mensaje_cuerpo = "<h3>Su cuenta fue reestablecida</h3></br><p>Su contraseña para acceder ahora es: !clave!</p>";
