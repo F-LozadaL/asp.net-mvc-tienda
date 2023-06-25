@@ -43,7 +43,7 @@ namespace CapaPresentacionTienda.Controllers
             ViewData["Apellidos"] = string.IsNullOrEmpty(objeto.Apellidos) ? "" : objeto.Apellidos;
             ViewData["Correo"] = string.IsNullOrEmpty(objeto.Correo) ? "" : objeto.Correo;
 
-            if(objeto.Clave== objeto.ConfirmarClave)
+            if(objeto.Clave!= objeto.ConfirmarClave)
             {
                 ViewBag.Error = "Las contraseñas no coinciden";
                 return View();
@@ -166,6 +166,7 @@ namespace CapaPresentacionTienda.Controllers
 
         public ActionResult CerrarSesion()
         {
+            Session["Cliente"] = null;
             FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Acceso");
 
