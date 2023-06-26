@@ -2,7 +2,8 @@
   "ExpandedNodes": [
     "",
     "\\CapaPresentacionTienda",
-    "\\CapaPresentacionTienda\\Controllers"
+    "\\CapaPresentacionTienda\\Controllers",
+    "\\CapaPresentacionTienda\\Views"
   ],
   "SelectedNode": "\\CursoMVC.sln",
   "PreviewInSolutionExplorer": false

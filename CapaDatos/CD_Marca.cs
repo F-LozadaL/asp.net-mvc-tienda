@@ -157,8 +157,8 @@ namespace CapaDatos
                     StringBuilder sb= new StringBuilder();
 
                     sb.AppendLine("select distinct m.IdMarca, m.Descripcion from producto p");
-                    sb.AppendLine("inner join categoria c on c.IdCategoria==p.IdCategoria");
-                    sb.AppendLine("inner join marca m on m.IdMarca==p.IdMarca and m.Activo=1");
+                    sb.AppendLine("inner join categoria c on c.IdCategoria=p.IdCategoria");
+                    sb.AppendLine("inner join marca m on m.IdMarca=p.IdMarca and m.Activo=1");
                     sb.AppendLine("where c.IdCategoria = iif(@idcategoria=0,c.IdCategoria,@idcategoria)");
 
 
