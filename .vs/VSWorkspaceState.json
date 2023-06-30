@@ -3,8 +3,8 @@
     "",
     "\\CapaPresentacionTienda",
     "\\CapaPresentacionTienda\\Controllers",
-    "\\CapaPresentacionTienda\\Views"
+    "\\CapaPresentacionTienda\\Views",
+    "\\CapaPresentacionTienda\\Views\\Tienda"
   ],
-  "SelectedNode": "\\CursoMVC.sln",
   "PreviewInSolutionExplorer": false
 }

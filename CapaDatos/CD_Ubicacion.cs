@@ -97,7 +97,7 @@ namespace CapaDatos
 
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
                 {
-                    string query = "select * from provincia where iddepartamento = @iddepartamento and idprovincia= @idprovincia";
+                    string query = "select * from distrito where iddepartamento = @iddepartamento and idprovincia= @idprovincia";
 
                     SqlCommand cmd = new SqlCommand(query, oconexion);
                     cmd.Parameters.AddWithValue("@iddepartamento", iddepartamento);

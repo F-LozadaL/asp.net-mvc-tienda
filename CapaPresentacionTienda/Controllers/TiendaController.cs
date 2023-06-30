@@ -7,7 +7,9 @@ using System.Web.Mvc;
 using CapaNegocio;
 using System.IO;
 using System.Web.Services.Description;
-
+using System.Threading.Tasks;
+using System.Data;
+using System.Globalization;
 
 namespace CapaPresentacionTienda.Controllers
 {
@@ -153,7 +155,7 @@ namespace CapaPresentacionTienda.Controllers
             int idcliente = ((Cliente)Session["Cliente"]).IdCliente;
             bool respuesta = false;
             string mensaje = String.Empty;
-            respuesta = new CN_Carrito().OperacionCarrito(idcliente, idproducto, true, out mensaje);
+            respuesta = new CN_Carrito().OperacionCarrito(idcliente, idproducto, sumar, out mensaje);
 
 
             return Json(new { respuesta, mensaje }, JsonRequestBehavior.AllowGet);
@@ -177,7 +179,7 @@ namespace CapaPresentacionTienda.Controllers
         {
             List<Departamento> oLista= new List<Departamento>();
             oLista = new CN_Ubicacion().ObtenerDepartamento();
-            return Json(new { data = oLista }, JsonRequestBehavior.AllowGet);
+            return Json(new { lista = oLista }, JsonRequestBehavior.AllowGet);
         
         }
 
@@ -186,7 +188,7 @@ namespace CapaPresentacionTienda.Controllers
         {
             List<Provincia> oLista = new List<Provincia>();
             oLista = new CN_Ubicacion().ObtenerProvincia(iddepartamento);
-            return Json(new { data = oLista }, JsonRequestBehavior.AllowGet);
+            return Json(new { lista = oLista }, JsonRequestBehavior.AllowGet);
 
         }
 
@@ -195,7 +197,7 @@ namespace CapaPresentacionTienda.Controllers
         {
             List<Distrito> oLista = new List<Distrito>();
             oLista = new CN_Ubicacion().ObtenerDistrito(iddepartamento, idprovincia);
-            return Json(new { data = oLista }, JsonRequestBehavior.AllowGet);
+            return Json(new { lista = oLista }, JsonRequestBehavior.AllowGet);
 
         }
 
@@ -204,7 +206,40 @@ namespace CapaPresentacionTienda.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<JsonResult> ProcesarPago(List<Carrito> oListaCarrito, Venta oVenta)
+        {
+            decimal total = 0;
+            DataTable detalle_venta = new DataTable();
 
+            detalle_venta.Locale = new CultureInfo("es-CO");
+            detalle_venta.Columns.Add("IdProducto", typeof(string));
+            detalle_venta.Columns.Add("Cantidad", typeof(Int32));
+            detalle_venta.Columns.Add("Total", typeof(decimal));
+
+            foreach(Carrito oCarrito in oListaCarrito)
+            {
+                decimal subtotal = Convert.ToDecimal(oCarrito.Cantidad.ToString())* oCarrito.oProducto.Precio;
+                total += subtotal;
+
+                detalle_venta.Rows.Add(new object[]
+                {
+                    oCarrito.oProducto.IdProducto,
+                    oCarrito.Cantidad,
+                    subtotal
+                });
+            }
+
+            oVenta.MontoTotal = total;
+            oVenta.IdCliente = ((Cliente)Session["Cliente"]).IdCliente;
+
+            TempData["Venta"] = oVenta;
+            TempData["DetalleVenta"] = detalle_venta;
+
+            return Json(new { status = true, Link = "/Tienda/Pagoefectuado?idTransaccion=code0001&status=true"}, JsonRequestBehavior.AllowGet);
+
+
+        }
 
     }
 }
