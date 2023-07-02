@@ -17,4 +17,5 @@ namespace CapaNegocio
             return objCapaDato.Registrar(obj, DetalleVenta, out Mensaje);
 
         }
+    }
 }

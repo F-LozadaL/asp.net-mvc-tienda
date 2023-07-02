@@ -18,7 +18,7 @@ namespace CapaDatos
             Mensaje = string.Empty;
 
             try
-            {
+                {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
                 {
                     SqlCommand cmd = new SqlCommand("usp_RegistrarVenta", oconexion);

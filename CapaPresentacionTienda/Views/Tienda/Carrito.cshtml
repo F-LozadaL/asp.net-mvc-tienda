@@ -47,7 +47,9 @@
                                                         <button class="btn btn-outline-secondary btn-restar rounded-0">
                                                             <i class="fas fa-minus"></i>
                                                         </button>
+
                                                         <input disabled class="form-control input-cantidad p-1 text-center rounded-0" style="width:40px" />
+
                                                         <button class="btn btn-outline-secondary btn-sumar rounded-0">
                                                             <i class="fas fa-plus"></i>
                                                         </button>
@@ -96,8 +98,8 @@
                                             <input type="text" class="form-control form-control-sm" id="txtnombrecontacto" autocomplete="off">
                                         </div>
                                         <div class="mb-2">
-                                            <label for="exampleInputEmail" class="form-label">Direccion: </label>
-                                            <input type="text" class="form-control form-control-sm" id="exampleInputEmail" autocomplete="off">
+                                            <label for="txtdireccion" class="form-label">Direccion: </label>
+                                            <input type="text" class="form-control form-control-sm" id="txtdireccion" autocomplete="off">
                                         </div>
                                         <div class="mb-3">
                                             <label for="txttelefono" class="form-label">Telefono: </label>
@@ -219,6 +221,8 @@
 
 
             $("<option>").attr({ "value": "00", "disabled": "disabled","selected":"true" }).text("Seleccionar").appendTo("#cbodepartamento")
+            $("<option>").attr({ "value": "00", "disabled": "disabled", "selected": "true" }).text("Seleccionar").appendTo("#cboprovincia")
+            $("<option>").attr({ "value": "00", "disabled": "disabled", "selected": "true" }).text("Seleccionar").appendTo("#cbodistrito")
 
             jQuery.ajax({
                 url: '@Url.Action("ObtenerDepartamento", "Tienda")',
@@ -402,7 +406,7 @@
 
             var card_producto = $(this).parents("div.card-producto");
 
-            
+
             jQuery.ajax({
                 url: '@Url.Action("EliminarCarrito", "Tienda")',
                 type: "POST",
@@ -411,7 +415,7 @@
                 contentType:"application/json; charset=urf-8",
                 success: function (data) {
 
-                    if (data.respuesta) { 
+                    if (data.respuesta) {
 
                         card_producto.remove();
 
@@ -420,13 +424,74 @@
                         sumaTotal();
 
                     } else {
-                        swal("", data.mensaje, warning);
+                        swal("", data.mensaje, "warning");
                     }
 
                 }
             })
-            
+
         })
+
+        function RealizarPago() {
+            if (parseInt($("#cantidadcarrito").text()) == 0) {
+                swal("", "No hay productos en el carrito", "warning");
+                return;
+            }
+
+            if ($("#cbodistrito").val() == null || $("#txtnombrecontacto").val() == "" || $("#txtdireccion").val() == "" || $("#txttelefono").val() == "") {
+                swal("", "Debe completar los datos de detalle envio", "warning");
+                return;
+            }
+
+            var venta = {
+                TotalProducto: $("input.input-cantidad").length,
+                MontoTotal: 0,
+                Contacto: $("#txtnombrecontacto").val(),
+                IdDistrito: $("#cbodistrito").val(),
+                Telefono: $("#txttelefono").val(),
+                Direccion: $("#txtdireccion").val()
+            }
+
+            var lista_carrito = [];
+            $("input.input-cantidad").each(function () {
+
+                var producto = $(this).data("oProducto");
+                var cantidad = parseFloat($(this).val());
+
+                lista_carrito.push({
+                    oProducto: producto,
+                    Cantidad: cantidad
+                })
+            })
+
+            jQuery.ajax({
+                    url: '@Url.Action("ProcesarPago", "Tienda")',
+                    type: "POST",
+                    data: JSON.stringify({ oListaCarrito: lista_carrito, oVenta : venta   }),
+                    dataType:"json",
+                    contentType:"application/json; charset=urf-8",
+                    success: function (data) {
+
+                        $.LoadingOverlay("hide")
+
+                        if (data.Status) {
+                            window.location.href = data.Link;
+                        } else {
+                            swal("", "Vuelva a Intetarlo mas tarde", "warning");
+                        }
+
+                    },
+                    error: function () {
+                        $.LoadingOverlay("hide")
+                    },
+                    beforeSend: function () {
+
+                        $.LoadingOverlay("show")
+                    }
+                })
+
+
+        }
 
 
     </script>

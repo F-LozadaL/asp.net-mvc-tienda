@@ -214,7 +214,7 @@ namespace CapaPresentacionTienda.Controllers
 
             detalle_venta.Locale = new CultureInfo("es-CO");
             detalle_venta.Columns.Add("IdProducto", typeof(string));
-            detalle_venta.Columns.Add("Cantidad", typeof(Int32));
+            detalle_venta.Columns.Add("Cantidad", typeof(int));
             detalle_venta.Columns.Add("Total", typeof(decimal));
 
             foreach(Carrito oCarrito in oListaCarrito)
@@ -236,9 +236,33 @@ namespace CapaPresentacionTienda.Controllers
             TempData["Venta"] = oVenta;
             TempData["DetalleVenta"] = detalle_venta;
 
-            return Json(new { status = true, Link = "/Tienda/Pagoefectuado?idTransaccion=code0001&status=true"}, JsonRequestBehavior.AllowGet);
+            return Json(new { Status = true, Link = "/Tienda/PagoEfectuado?idTransaccion=code0001&status=true"}, JsonRequestBehavior.AllowGet);
 
 
+        }
+
+        public async Task<ActionResult> PagoEfectuado()
+        {
+            string idtransaccion = Request.QueryString["idTransaccion"];
+            bool status = Convert.ToBoolean(Request.QueryString["status"]);
+
+            ViewData["Status"] = status;
+
+            if (status)
+            {
+                Venta oVenta = (Venta)TempData["Venta"];
+
+                DataTable detalle_venta=(DataTable)TempData["DetalleVenta"];
+                oVenta.IdTransaccion = idtransaccion;
+                string mensaje = String.Empty;
+
+                bool respuesta = new CN_Venta().Registrar(oVenta, detalle_venta, out mensaje);
+
+                ViewData["IdTransaccion"] = oVenta.IdTransaccion;
+
+
+            }
+            return View(); 
         }
 
     }
